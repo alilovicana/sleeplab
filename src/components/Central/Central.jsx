@@ -49,9 +49,9 @@ export default function Central() {
                 <div className="images" style={{ color: "gray" }}>
                     {showHistogram && <img src={histogram} alt="histogram" />}
                     {showGraph && <img src={graph} alt="graph" />}
-                    {/* {showHistogram && <img src={histogram} alt="histogram" />}
+                    {showHistogram && <img src={histogram} alt="histogram" />}
                     {showGraph && <img src={graph} alt="graph" />} {showHistogram && <img src={histogram} alt="histogram" />}
-                    {showGraph && <img src={graph} alt="graph" />} */}
+                    {showGraph && <img src={graph} alt="graph" />}
                 </div>
             </div>
         </div>
