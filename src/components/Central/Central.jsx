@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import "./central.css";
 import histogram from '../../assets/histogram.png';
 import graph from '../../assets/graph.jpg';
+import { PersonContext } from "../../context/PersonContext";
+import { useContext } from 'react';
 
 export default function Central() {
     const [showHistogram, setShowHistogram] = useState(true);
@@ -13,10 +15,11 @@ export default function Central() {
     const handleGraphChange = () => {
         setShowGraph(!showGraph);
     };
+    const { person} = useContext(PersonContext);
     return (
         <div className="central">
             <div className="centralWrapper">
-               <div className='name'> <h1>PACIJENT: #12382938</h1></div>
+               <div className='name'> <h1>PACIJENT: {person.id}</h1></div>
                 <div className="checkbox">
                     <div className={`checkbox ${showHistogram ? "on" : "off"}`} onClick={handleHistogramChange}>
                         {showHistogram ? (
