@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import "./central.css";
-import histogram from '../../assets/histogram.png';
-import graph from '../../assets/graph.jpg';
+import histogram from '../../../backend/patient_histogram.png';
+import graph from '../../../backend/patient_graph.png';
 import { PersonContext } from "../../context/PersonContext";
 import { useContext } from 'react';
 import { Line, Bar } from 'react-chartjs-2';
