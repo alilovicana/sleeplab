@@ -1,25 +1,57 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import "./central.css";
 import histogram from '../../assets/histogram.png';
 import graph from '../../assets/graph.jpg';
 import { PersonContext } from "../../context/PersonContext";
 import { useContext } from 'react';
+import { Line, Bar } from 'react-chartjs-2';
 
 export default function Central() {
     const [showHistogram, setShowHistogram] = useState(true);
     const [showGraph, setShowGraph] = useState(false);
+
+    /********************************************** */
+
+    // useEffect(() => {
+    //     // Učitavanje podataka za grafikon i histogram
+    //     fetch('/python/:id')
+    //         .then(response => response.blob())
+    //         .then(blob => {
+    //             const reader = new FileReader();
+    //             reader.onloadend = () => {
+    //                 const buffer = reader.result;
+    //                 const graphUrl = URL.createObjectURL(new Blob([buffer]));
+    //                 setShowGraph(graphUrl);
+    //             };
+    //             reader.readAsArrayBuffer(blob);
+    //         });
+
+    //     fetch('/python/:id')
+    //         .then(response => response.blob())
+    //         .then(blob => {
+    //             const reader = new FileReader();
+    //             reader.onloadend = () => {
+    //                 const buffer = reader.result;
+    //                 const histogramUrl = URL.createObjectURL(new Blob([buffer]));
+    //                 setShowHistogram(histogramUrl);
+    //             };
+    //             reader.readAsArrayBuffer(blob);
+    //         });
+    // }, []);
+
+
+    /************************************************* */
     const handleHistogramChange = () => {
         setShowHistogram(!showHistogram);
     };
     const handleGraphChange = () => {
         setShowGraph(!showGraph);
     };
-    const { person} = useContext(PersonContext);
+    const { person } = useContext(PersonContext);
     return (
         <div className="central">
             <div className="centralWrapper">
-               <div className='name'> <h1>PACIJENT: {person.id}</h1></div>
+                <div className='name'> <h1>PACIJENT:# {person.id}</h1></div>
                 <div className="checkbox">
                     <div className={`checkbox ${showHistogram ? "on" : "off"}`} onClick={handleHistogramChange}>
                         {showHistogram ? (
@@ -51,9 +83,6 @@ export default function Central() {
                 </div>
                 <div className="images" style={{ color: "gray" }}>
                     {showHistogram && <img src={histogram} alt="histogram" />}
-                    {showGraph && <img src={graph} alt="graph" />}
-                    {showHistogram && <img src={histogram} alt="histogram" />}
-                    {showGraph && <img src={graph} alt="graph" />} {showHistogram && <img src={histogram} alt="histogram" />}
                     {showGraph && <img src={graph} alt="graph" />}
                 </div>
             </div>
