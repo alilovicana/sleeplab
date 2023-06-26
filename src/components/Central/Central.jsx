@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import "./central.css";
-import histogram from '../../assets/histogram.png';
-import graph from '../../assets/graph.jpg';
+import patientHistogram from 'patient_histogram.png';
+import patientGraph from 'patient_graph.png';
 import { PersonContext } from "../../context/PersonContext";
 import { useContext } from 'react';
-import { Line, Bar } from 'react-chartjs-2';
+
 
 export default function Central() {
     const [showHistogram, setShowHistogram] = useState(true);
@@ -51,13 +51,8 @@ export default function Central() {
                     </div>
                 </div>
                 <div className="images" style={{ color: "gray" }}>
-                    {showHistogram && <img src={histogram} alt="histogram" />}
-                    {showGraph && <img src={graph} alt="graph" />}
-                    {showHistogram && <img src={histogram} alt="histogram" />}
-                    {showGraph && <img src={graph} alt="graph" />}     {showHistogram && <img src={histogram} alt="histogram" />}
-                    {showGraph && <img src={graph} alt="graph" />}     {showHistogram && <img src={histogram} alt="histogram" />}
-                    {showGraph && <img src={graph} alt="graph" />}     {showHistogram && <img src={histogram} alt="histogram" />}
-                    {showGraph && <img src={graph} alt="graph" />}
+                    {showHistogram && <img src={patientHistogram} alt="histogram" />}
+                    {showGraph && <img src={patientGraph} alt="graph" />}
                 </div>
             </div>
         </div>

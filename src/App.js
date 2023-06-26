@@ -43,7 +43,6 @@ export default function App() {
         error: false,
 
       };
-      console.log(response)
       setPerson(PERSON_STATE);
       return response.data; // Vraća podatke pacijenta
     } catch (error) {
@@ -55,34 +54,6 @@ export default function App() {
   const fetchGraph = async (patientId) => {
     try {
       const response = await axios.get(`/python/${patientId}`);
-      console.log("ana", response);
-
-
-      // Dekodiranje Base64 teksta u binarni sadržaj
-      const decodeBase64Image = (response) => {
-        const binaryString = atob(response);
-        const bytes = new Uint8Array(binaryString.length);
-        for (let i = 0; i < binaryString.length; i++) {
-          bytes[i] = binaryString.charCodeAt(i);
-        }
-        return bytes;
-      };
-      const ImageComponent = ({ response }) => {
-        try {
-          const imageData = decodeBase64Image(response);
-          const blob = new Blob([imageData], { type: 'image/png' });
-          const imageUrl = URL.createObjectURL(blob);
-          return <img src={imageUrl} alt="Slika" />;
-        } catch (error) {
-          console.error("Error decoding image:", error);
-          return <p>Error decoding image.</p>;
-        }
-      };
-
-      setPerson((prevPerson) => ({
-        ...prevPerson,
-        graf: <ImageComponent response={response.data} />,
-      }));
     } catch (error) {
       console.error("Error fetching graph:", error);
       throw new Error("Greška prilikom dohvata pacijenta.");
@@ -99,7 +70,6 @@ export default function App() {
   return (
       < PersonContext.Provider value={{ person, setPerson }}>
         <Home />
-         {person.graf && person.graf}
       </ PersonContext.Provider>
   );
 }

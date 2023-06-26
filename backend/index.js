@@ -75,26 +75,20 @@ app.get("/python/:id", async (req, res) => {
     // Opcije za izvršavanje skripte
     const options = {
         pythonPath: 'C:/Users/Korisnik/AppData/Local/Programs/Python/Python311/python.exe',
-        // args: [id],
+         args: [id],
     };
     try {
       
         // Call your function with the patient ID and retrieve the result
-       await PythonShell.run(scriptPath, options, async (err, result) => {
+      const response= await PythonShell.run(scriptPath, options, async (err, result) => {
             if (err) {
                 console.error(err);
             } else {
                 console.log('Rezultat:', result);
             }
         });
-        const patientGraph = fs.readFileSync('./patient_graph.png');
-        const base64Graph = patientGraph.toString('base64');
-
-        // If the result is successfully retrieved, send it as the response
-        console.log(1)
-        console.log(base64Graph);
-        console.log(1)
-        res.status(200).json({ base64Graph});
+        console.log(1);
+        res.status(200).json(response);
     } catch (err) {
         console.log(5)
         // If an error occurs, send the error as the response
