@@ -8,14 +8,14 @@ patient4_data = [4, 8, 12, 16, 20]
 
 patient_data=patient3_data
 plt.plot(patient_data)
-plt.title('Graf pacijenta 3')
+plt.title('Graf pacijenta 17')
 plt.xlabel("Vrijeme")
 plt.ylabel("Vrijednost")
 plt.savefig("patient_graph.png") 
 plt.close() 
 
 plt.hist(patient_data, bins=10)
-plt.title("Histogram pacijenta 3")
+plt.title("Histogram pacijenta 17")
 plt.xlabel("Vrijednost")
 plt.ylabel("Broj uzoraka")
 plt.savefig("patient_histogram.png") 

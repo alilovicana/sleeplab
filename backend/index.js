@@ -69,8 +69,6 @@ import { PythonShell } from 'python-shell';
 
 // Putanja do Python skripte koju želite pokrenuti
 const scriptPath = 'python.py';
-
-
 //get graf
 app.get("/python/:id", async (req, res) => {
     const { id } = req.params;
@@ -80,72 +78,29 @@ app.get("/python/:id", async (req, res) => {
         // args: [id],
     };
     try {
+      
         // Call your function with the patient ID and retrieve the result
-        const result = await PythonShell.run(scriptPath, options, (err, result) => {
+       await PythonShell.run(scriptPath, options, async (err, result) => {
             if (err) {
                 console.error(err);
             } else {
                 console.log('Rezultat:', result);
-                // Učitavanje .png datoteke
-                const file1Path = 'C:/Users/Korisnik/Desktop/sleeplab-backend/patient_graph.png';
-                const file2Path = 'C:/Users/Korisnik/Desktop/sleeplab-backend/patient_histogram.png';
-                // Slanje datoteka kao odgovor na frontend
-                res.status(200).sendFile(file1Path);
-                res.status(200).sendFile(file2Path);
             }
         });
+        const patientGraph = fs.readFileSync('./patient_graph.png');
+        const base64Graph = patientGraph.toString('base64');
+
         // If the result is successfully retrieved, send it as the response
-        res.status(200).json(result);
-        console.log(result);
+        console.log(1)
+        console.log(base64Graph);
+        console.log(1)
+        res.status(200).json({ base64Graph});
     } catch (err) {
+        console.log(5)
         // If an error occurs, send the error as the response
         res.status(500).json({ error: err.message });
     }
 });
-
-// app.get("/python/:id", async (req, res) => {
-//     const { id } = req.params;
-//     // Opcije za izvršavanje skripte
-//     const options = {
-//         pythonPath: 'C:/Users/Korisnik/AppData/Local/Programs/Python/Python311/python.exe',
-//         // args: [id],
-//     };
-//     try {
-//         // Call your function with the patient ID and retrieve the result
-//         await new Promise((resolve, reject) => {
-//             PythonShell.run(scriptPath, options, (err, result) => {
-//                 if (err) {
-//                     console.error(err);
-//                     reject(err);
-//                 } else {
-//                     console.log('Rezultat:', result);
-//                     // Učitavanje .png datoteka
-//                     const file1Path = 'C:/Users/Korisnik/Desktop/sleeplab-backend/patient_graph.png';
-//                     const file2Path = 'C:/Users/Korisnik/Desktop/sleeplab-backend/patient_histogram.png';
-
-//                     // Čitanje datoteka kao Buffer objekata
-//                     const file1Buffer = fs.readFileSync(file1Path);
-//                     const file2Buffer = fs.readFileSync(file2Path);
-
-//                     // Slanje Buffer objekata kao odgovor na frontend
-//                     res.set('Content-Type', 'image/png');
-//                     res.set('Content-Disposition', 'inline; filename=patient_graph.png');
-//                     res.send(file1Buffer);
-
-//                     res.set('Content-Type', 'image/png');
-//                     res.set('Content-Disposition', 'inline; filename=patient_histogram.png');
-//                     res.send(file2Buffer);
-
-//                     resolve();
-//                 }
-//             });
-//         });
-//     } catch (err) {
-//         // If an error occurs, send the error as the response
-//         res.status(500).json({ error: err.message });
-//     }
-// });
-
 
 app.listen(8800, () => {
     console.log("Backend server is running!");
