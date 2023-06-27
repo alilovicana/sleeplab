@@ -18,7 +18,7 @@ async function getServerSideProps(id) {
 
         // Query
 
-        const range = `sleeplab!A1:K5`;
+        const range = `sleeplab!A1:GN379`;
 
         const response = await sheets.spreadsheets.values.get({
             spreadsheetId: "13OqS9ad5-Eg0nWw0twfS2kpb6Ho8kocIrqwEE5sOch8",
@@ -27,19 +27,24 @@ async function getServerSideProps(id) {
 
         // Result
 
-        const [ID, spol, tezina, visina, dob, ahi, odi] = response.data.values[id];
-        // console.log(response.data.values[1][1]);
+        const [Patient_ID, Gender, Race, Age, Height,Weight, BMI,Systolic_Blood_Pressure, Diastolic_Blood_Pressure, Waist, Hip, Neck] = response.data.values[id];
+     console.log(Patient_ID);
         //console.log(ID, spol, tezina, visina, dob, ahi, odi)
 
         return {
             props: {
-                ID,
-                spol,
-                tezina,
-                visina,
-                dob,
-                ahi,
-                odi
+                Patient_ID,
+                Gender,
+                Race,
+                Age,
+                Height,
+                Weight,
+                BMI,
+                Systolic_Blood_Pressure,
+                Diastolic_Blood_Pressure,
+                Waist,
+                Hip,
+                Neck
             }
         }
     } catch (e) {
@@ -87,7 +92,6 @@ app.get("/python/:id", async (req, res) => {
                 console.log('Rezultat:', result);
             }
         });
-        console.log(1);
         res.status(200).json(response);
     } catch (err) {
         console.log(5)

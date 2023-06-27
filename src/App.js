@@ -27,12 +27,21 @@ export default function App() {
   const fetchPerson = async (patientId) => {
     try {
       const response = await axios.get(`/${patientId}`);
+      console.log(response)
       const PERSON_STATE = {
-        id: response.data.props.ID,
-        spol: response.data.props.spol,
-        dob: response.data.props.dob,
-        tezina: response.data.props.tezina,
-        visina: response.data.props.visina,
+        id: response.data.props.Patient_ID,
+        spol: response.data.props.Gender,
+        rasa:response.data.props.Race,
+        dob: response.data.props.Age,
+        tezina: response.data.props.Weight,
+        visina: response.data.props.Height,
+        BMI: response.data.props.BMI,
+        sistolicki_tlak: response.data.props.Systolic_Blood_Pressure,
+        diastolicki_tlak: response.data.props.Diastolic_Blood_Pressure,
+        puls: response.data.props.Heart_Rate,
+        struk: response.data.props.Waist,
+        kukovi: response.data.props.Hip,
+        vrat: response.data.props.Neck,
         ahi: response.data.props.ahi,
         odi: response.data.props.odi,
         histogram: null,
@@ -61,7 +70,6 @@ export default function App() {
   };
 
   const patientId = searchValue;
-
   // pozivanje fetchPerson funkcije samo kad se pronijeni patientID (uklanjanje Uncaught runtime errors:)
   useEffect(() => {
     fetchPerson(patientId);
