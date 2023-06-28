@@ -7,6 +7,7 @@ function Home() {
   return (
     <>
       <Topbar />
+      <div className="redLine"></div>
       <div className="homeContainer">
         <Sidebar/>
         <Central/>

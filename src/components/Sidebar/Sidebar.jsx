@@ -26,8 +26,8 @@ export default function Sidebar() {
                             <span className="sidebarListItemUnder">Dijastolički tlak: {person.diastolicki_tlak}</span>
                             <span className="sidebarListItemUnder">Puls: {person.puls}</span>
                             <span className="sidebarListItemUnder">Širina vrata: {person.vrat}</span>
-                            <span className="sidebarListItemUnder">Širina struka: {person.kukovi}</span>
-                            <span className="sidebarListItemUnder">Širina kukova: {person.dob}</span>
+                            <span className="sidebarListItemUnder">Širina struka: {person.struk}</span>
+                            <span className="sidebarListItemUnder">Širina kukova: {person.kukovi}</span>
                         </li>
                     </li>
                 </ul>

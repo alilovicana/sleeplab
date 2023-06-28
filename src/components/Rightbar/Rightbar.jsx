@@ -1,16 +1,17 @@
 import './rightbar.css'
-import { FormControl, InputLabel, Select, MenuItem } from "@mui/material"
 import { PersonContext } from "../../context/PersonContext";
 import { useContext } from 'react';
 export default function Rightbar() {
 
-    const { person} = useContext(PersonContext);
+    const { person } = useContext(PersonContext);
     return (
         <div className="rightbar">
             <div className="rightbarWrapper">
                 <h4 className="rightbarTitle">Općeniti podaci o pacijentu</h4>
                 <span className="rightbarListItem">AHI: {person.ahi}</span>
                 <span className="rightbarListItem">ODI: {person.odi}</span>
+                <span className="rightbarListItem">Mean SaO2: {person.Mean_SaO2}</span>
+                <span className="rightbarListItem">Lowest SaO2: {person.Lowest_SaO2}</span>
                 <div className="mainList">
                     <li className="sidebarListItem">
                         <div className="title">
@@ -34,9 +35,8 @@ export default function Rightbar() {
                             <span className="sidebarListItemText">Povijest bolesti</span>
                         </div>
                         <li className="sidebarListItemMinor">
-                            <span className="sidebarListItemUnder">Astma</span>
-                            <span className="sidebarListItemUnder">Rahitis</span>
-                            <span className="sidebarListItemUnder">Upala pluća</span>
+                            <span className="sidebarListItemUnder">{person.CV_Other}</span>
+                            <span className="sidebarListItemUnder">{person.Other_o}</span>
                         </li>
                     </li>
                 </div>

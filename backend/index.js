@@ -1,36 +1,61 @@
 import { google } from 'googleapis';
 import express from "express";
 const app = express();
+import { GoogleSpreadsheet } from 'google-spreadsheet';
 import fs from 'fs';
+import { JWT } from 'google-auth-library'
 
 /***********************************EXCEL*********************************************/
 async function getServerSideProps(id) {
 
     try {
-        const auth = await google.auth.getClient({
-            credentials: {
-                client_email: "app-engine-default-service-acc@sleeplab-387813.iam.gserviceaccount.com",
-                private_key: "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQC+LyU8aifKRbLw\nFdlbNgsQ9/X1rp4yl6NgfH9DXoo6MllNzn5lICeUpSwdv9Di01KPY6drlcg7s4rA\n/iEnrQeaF/xq9N/aj4PexKCfHlIJnLSGkzPPw36OPsKmxZRMdAsLTECpiEueA9MA\nRvjxHZNYDe6xSBPkCRtWm+rnQRJQ0Qt5XQKulbyVRnAdF+BBnea/I4t0CgtuxRmJ\nmOMpFogTLuW0nKgDYYcaPx8T78m0XNbUVfG8fxfvET4+WyzozEm5M4LrhcuQZlrb\nA5oNMGY5hVQampD0iTI5lfUQKff3siMpz4Z9gde4DEGBGYUw+r4IKQvvO9N19uFA\n8e1pKuq5AgMBAAECggEAAe7EuBp0ERAoQ1xVeyHPdvquGzMNFIKJ/H8HZA3f5buB\nQNMqYaiz/kS3cA3093kiS6a9mtBI2qJ2dIOgnqCZhS1dOVEHvVbcBjWFVFigiMx4\n4S05x5C7BoMIw10aprQ/MHwz5AUoj5CGYmhWO00LpEdv94k9+oFFL9ohxvvYTc3t\niHmrtXp0GYjUv52ocDaikGFxKgOZKyz7euGv34lAEEZb+UrhZiKeqPZxTCuADyrv\n3FXxpZAgxyOVvViPuxl29wtapwgeXOI4OyXv9JTJslb+/5wod5t529rM8Awpji7+\nBHgMOz/fyFDjD8uxFdn3eSKCF3qczoQQ8ZeLeDcEAQKBgQDzDHJCdeNJGOou/m60\nGXM1rVnni4yfVfIjWdRWPuEXfRGpGt4cC94NgkIhqOzFtiOjFl9prMBfgk0E9pwp\nIiWT38YL3rN2yb15wdMtgZuELuqs0el6DRczJgMBhShp1jUzxfZ6NhXA6pVgLsqM\nL/SZfrNquRrYxS+Ovv2ip3fOwQKBgQDIUYwfG2vi9jygRnsGiWNIIGRWeLmzS4E4\nWl7IaJ+vCgknNXncTBIpCJLMwAnYr20VRVdnMahLipvo+HJ+I/tACDMnt/XtYDCF\n2594pW8bQ/7ZBV1DlTV4B8n/hG7ffMLQ2Kz1fG063JUZ8rEJUuC7j53nLKIFyc/8\niXREsugR+QKBgEwB1W2hTk3aw8mkedxKpTPhHV+CzZw6lXmmqve5vEzLKQ24QEOH\nFo8k8Cd0m28NEcH7yiTTCGoV5p4pvRZD/nprHZUytO7uEhoUmkT95jOFNJCNKLWp\niFrPhVshWE0Y1xR00SrQ5SaqdcJZf7AtgxHJhLRYZOPrbn72jX0jYB1BAoGAaLV/\nqg76YQPXguv0iOEt3VjZOf4XC6qPHDbYzqcpuSRkznL8hPPalkpd+dr0CqkAOxso\n6c8iKoKEps2fg2IphjoDC2L0kSUzl/TKMhU/s5/iSeys6JPJBDoGE6NVFUswxlxM\nZHGq4xbEdXDPq5D/2erjXiCNfLsWFep/tR1Tg3kCgYAEWzaKmLl+e/kE2lb7MtQD\nm5NVMhVpic2znZa0UGJi0ADZE7BEtOQprgbC7MumcGBPBvH1zErvh9VswqGHkZzC\nCW35wKvdfxWvlGcIbMNsNiFeeRtutFf0JiZ9FuSZsPKhv5e/acAO8SPiecl/Dye0\nyerhdH9+CcfZeRTu+yqqRQ==\n-----END PRIVATE KEY-----\n",
-            }, scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly']
+        const auth = new JWT({
+            email: "app-engine-default-service-acc@sleeplab-387813.iam.gserviceaccount.com",
+            key: "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDocsshPW0bd2d1\n7rPTU61gUaeWj8hKLOX/9zRQ68lKj7HRVkuTOQpIBIM+/fiwFSzSzq25N3w2koL+\nEcOGEqE+E6vMttBfeK86tJMsM4xjr81875TpRRDbHx2NrAZ3agA0DcYv7L1oWgnU\nEEauM/iEhWqJ3kQWHdUwEaJQixr5TnpybUBXIm/3hdwDGmikCAwTst2WjrYjtA6Y\nAJLmCxk22FrP2BFOFgmbv3LFG38dGjvwO0e6P+XjZ+TuoD6N3yB3qk9Nu8HBF7K3\nOi/OSqs4TTTKCye8SNxubjzJgD6GhwPpcTYLLDK4yI192MYNN6u9sh5rU98Cv6oi\n6a+zWY5LAgMBAAECggEATt9gsIs0weyepQQVbYAHpNagHHT2O8EHW/aoAEs5Vnzy\nk7sJ0s84f15UoGOx5iGRP4iUpvO+SJAnNYmWhCA/KR6onUJs6vA62RsbkxR8rvig\nq6NprktaoFdrAj7cRNmpbwA7ftiAHm/qxNOu//4vddwFXfmWtcByrahWIKlKwkuq\nqy3i+8w9ckukSy80WcaOCGBS1VOkktDunA9mzXMwh25S8vOO7lqY4RTzUWr+n2M5\nastOU1gWqPZ6IAI8DbSr1oBivans+R2mYv+bQ8heQmrebo2iE9z2BW2WcDkbNflP\ndWhsZoHDm5Nk0crd6xdFPrhJqSTulWlY+U22ftJVuQKBgQD4UWRpgsLegjJV8j28\nFnjArX+L19B8LvZiPV5wVIgbP+VRiN4ERsv04IYPzq+hELisXKEkvLXJcZDeQXxo\nSv8yVNm1+iI4jCq0flRRhLBpjmUnIrsxkDhs4pcvY7HTQ+Yo6g0363p2MUnwf6zY\nKBYTxsjdddVRVZVPJdDsEA0mkwKBgQDvo7gV9bFFvLYxWDypUXwp5OMJkX6+gDoe\nqFnuzN47OBSnJSML+eOUmBF2vHFhljkKYavu2DxOf6cigcgFh9FpuNT+ZvApr0rD\nxJdmHrCSeyMbNzfqx+0GoFpz67Vo5MOpvCHxvNOcA+Zg7qJG31gfW7XpRa5DPD6D\nsBoM1NHUaQKBgBJnLdLn/vswmPxnpI2g+LgG47IAf5IEhPwI4kve5+tlE+C0DQgy\nGwF99lGLltaP/6++ea7YUXypbvwZzFeKX1liknP7IrggIzYXOraD5/Mau4Jn/4mP\nz666KEw5zj8DBDa6CdrAF+ZUhs9NFwk6B1DV5aMMDZAmkJc6DT7BfcgDAoGAeulQ\nLAM+j3RBRoHpazbeJma9hFTZ2z/Nj5ftuKvfeCRFg41qsmPTNI3itzHkPZddXlPG\nadUC6YhT40EJpLyKzlz88hc+K0M7Z7nXpYssKZV65iSmS4eLrRBmFHrbKxfau55B\nEso1BxqA+UqsdQltG3hgj2sr/FRUBBs44Ufu77ECgYEAnvxI/tCfNVKew5bFUgxF\nGqku4FxuJY0PAzkFQBl71z7L8JC0J41CgWgMx2xHY0bbFzB2JGfutW8lSbmkipDV\ns0+Rzngd/BrtUfX4yAP7yKKc77ybUCkj5b6k+OFYxKDbRIlZASKyPNaxx7B8GO1s\nGyKh9eEiEOU6kE3G3FhTLmo=\n-----END PRIVATE KEY-----\n",
+            scopes: [
+                'https://www.googleapis.com/auth/spreadsheets',
+            ],
         });
 
-        const sheets = google.sheets({ version: 'v4', auth });
+        //Definiranje google sheeta uz pomoć sheet ID-a
+        let sheets = new GoogleSpreadsheet("13OqS9ad5-Eg0nWw0twfS2kpb6Ho8kocIrqwEE5sOch8", auth)
+        //učitavanje sheeta
+        await sheets.loadInfo(); 
 
-        // Query
+        //odabir bas tog prvog sheeta
+        let sheet = sheets.sheetsByIndex[0];
+        let data = await sheet.getRows({ limit: 379 })
+        let firstColumn = data.map(row => row._rawData[0]);
+        const rowIndex = firstColumn.findIndex(value => value === id);
+        // Izdvajanje prvih 14 vrijednosti iz retka
+        const rowData = data[rowIndex]._rawData.slice(0, 19);
+        // Pridruživanje pojedinačnim varijablama
+        const [
+            Patient_ID,
+            Gender,
+            Race,
+            Age,
+            Height,
+            Weight,
+            BMI,
+            Systolic_Blood_Pressure,
+            Diastolic_Blood_Pressure,
+            Heart_Rate,
+            Waist,
+            Hip,
+            Neck,
+            AHI,
+            Mean_SaO2,
+            Lowest_SaO2,
+            ODI,
+            CV_Other,
+            Other_o,
+        ] = rowData;
 
-        const range = `sleeplab!A1:GN379`;
+        console.log(Gender);
 
-        const response = await sheets.spreadsheets.values.get({
-            spreadsheetId: "13OqS9ad5-Eg0nWw0twfS2kpb6Ho8kocIrqwEE5sOch8",
-            range,
-        });
 
         // Result
-
-        const [Patient_ID, Gender, Race, Age, Height,Weight, BMI,Systolic_Blood_Pressure, Diastolic_Blood_Pressure, Waist, Hip, Neck] = response.data.values[id];
-     console.log(Patient_ID);
-        //console.log(ID, spol, tezina, visina, dob, ahi, odi)
-
         return {
             props: {
                 Patient_ID,
@@ -42,25 +67,29 @@ async function getServerSideProps(id) {
                 BMI,
                 Systolic_Blood_Pressure,
                 Diastolic_Blood_Pressure,
+                Heart_Rate,
                 Waist,
                 Hip,
-                Neck
+                Neck,
+                AHI,
+                Mean_SaO2,
+                Lowest_SaO2,
+                ODI,
+                CV_Other,
+                Other_o
             }
         }
     } catch (e) {
         console.log(e)
     }
     // Auth
-
 }
-
 //get patient
 app.get("/:id", async (req, res) => {
     const { id } = req.params;
     try {
         // Call your function with the patient ID and retrieve the result
         const result = await getServerSideProps(id);
-
         // If the result is successfully retrieved, send it as the response
         res.status(200).json(result);
     } catch (err) {
@@ -72,34 +101,72 @@ app.get("/:id", async (req, res) => {
 
 import { PythonShell } from 'python-shell';
 
-// Putanja do Python skripte koju želite pokrenuti
-const scriptPath = 'python.py';
-//get graf
-app.get("/python/:id", async (req, res) => {
-    const { id } = req.params;
-    // Opcije za izvršavanje skripte
-    const options = {
-        pythonPath: 'C:/Users/Korisnik/AppData/Local/Programs/Python/Python311/python.exe',
-         args: [id],
-    };
-    try {
-      
-        // Call your function with the patient ID and retrieve the result
-      const response= await PythonShell.run(scriptPath, options, async (err, result) => {
-            if (err) {
-                console.error(err);
-            } else {
-                console.log('Rezultat:', result);
-            }
-        });
-        res.status(200).json(response);
-    } catch (err) {
-        console.log(5)
-        // If an error occurs, send the error as the response
-        res.status(500).json({ error: err.message });
-    }
-});
+// // Putanja do Python skripte koju želite pokrenuti
+// ******************************************************
+// const scriptPath = 'python.py';
+// ******************************************************
+// //get graf
+// app.get("/python/:id", async (req, res) => {
+//     const { id } = req.params;
+//     // Opcije za izvršavanje skripte
+//     const options = {
+//         pythonPath: 'C:/Users/Korisnik/AppData/Local/Programs/Python/Python311/python.exe',
+//          args: [id],
+//     };
+//     try {
+
+//         // Call your function with the patient ID and retrieve the result
+//       const response= await PythonShell.run(scriptPath, options, async (err, result) => {
+//             if (err) {
+//                 console.error(err);
+//             } else {
+//                 console.log('Rezultat:', result);
+//             }
+//         });
+//         res.status(200).json(response);
+//     } catch (err) {
+//         console.log(5)
+//         // If an error occurs, send the error as the response
+//         res.status(500).json({ error: err.message });
+//     }
+// });
+// ******************************************************
+// app.get("/python/:id", async (req, res) => {
+//     const { id } = req.params;
+//     // Opcije za izvršavanje skripte
+//     const options = {
+//         pythonPath: 'C:/Users/Korisnik/AppData/Local/Programs/Python/Python311/python.exe',
+//         args: [id],
+//     };
+//     try {
+//         console.log(1)
+//         let result; // Dodajte varijablu result izvan povratnog poziva
+
+//         // Call your function with the patient ID and retrieve the result
+//         await PythonShell.run(scriptPath, options, async (err, pyResult) => {
+//             if (err) {
+//                 console.log(2)
+//                 console.error(err);
+//             } else {
+//                 console.log('Rezultat:', pyResult);
+//                 console.log(3)
+//             }
+//         });
+//         const patientGraph = fs.readFileSync('./patient_graph.png');
+//         const base64Graph = patientGraph.toString('base64');
+//         result = base64Graph;
+//         console.log(4)
+//         // If the result is successfully retrieved, send it as the response
+//         console.log(result);
+//         res.status(200).json({ result }).send();
+//     } catch (err) {
+//         console.log(5)
+//         // If an error occurs, send the error as the response
+//         res.status(500).json({ error: err.message });
+//     }
+// });
 
 app.listen(8800, () => {
     console.log("Backend server is running!");
 });
+
