@@ -2,7 +2,7 @@ import "./sidebar.css"
 import { PersonContext } from "../../context/PersonContext";
 import { useContext } from 'react';
 export default function Sidebar() {
-    const {person} = useContext(PersonContext);
+    const { person } = useContext(PersonContext);
     return (
         <div className="sidebar">
             <div className="sidebarWrapper">
@@ -15,21 +15,22 @@ export default function Sidebar() {
                             </svg></div>
                             <span className="sidebarListItemText">Osnovni podaci</span>
                         </div>
-                        <li className="sidebarListItemMinor">
-                            <span className="sidebarListItemUnder">Spol: {person.spol}</span>
-                            <span className="sidebarListItemUnder">Dob: {person.dob}</span>
-                            <span className="sidebarListItemUnder">Težina: {person.tezina}</span>
-                            <span className="sidebarListItemUnder">Visina: {person.visina}</span>
-                            <span className="sidebarListItemUnder">Rasa: {person.rasa}</span>
-                            <span className="sidebarListItemUnder">BMI: {person.BMI}</span>
-                            <span className="sidebarListItemUnder">Sistolički tlak: {person.sistolicki_tlak}</span>
-                            <span className="sidebarListItemUnder">Dijastolički tlak: {person.diastolicki_tlak}</span>
-                            <span className="sidebarListItemUnder">Puls: {person.puls}</span>
-                            <span className="sidebarListItemUnder">Širina vrata: {person.vrat}</span>
-                            <span className="sidebarListItemUnder">Širina struka: {person.struk}</span>
-                            <span className="sidebarListItemUnder">Širina kukova: {person.kukovi}</span>
-                        </li>
                     </li>
+                    <li className="sidebarListItemMinor">
+                        <span className="sidebarListItemUnder">Spol: {person.spol}</span>
+                        <span className="sidebarListItemUnder">Dob: {person.dob}</span>
+                        <span className="sidebarListItemUnder">Težina: {person.tezina}</span>
+                        <span className="sidebarListItemUnder">Visina: {person.visina}</span>
+                        <span className="sidebarListItemUnder">Rasa: {person.rasa}</span>
+                        <span className="sidebarListItemUnder">BMI: {person.BMI}</span>
+                        <span className="sidebarListItemUnder">Sistolički tlak: {person.sistolicki_tlak}</span>
+                        <span className="sidebarListItemUnder">Dijastolički tlak: {person.diastolicki_tlak}</span>
+                        <span className="sidebarListItemUnder">Puls: {person.puls}</span>
+                        <span className="sidebarListItemUnder">Širina vrata: {person.vrat}</span>
+                        <span className="sidebarListItemUnder">Širina struka: {person.struk}</span>
+                        <span className="sidebarListItemUnder">Širina kukova: {person.kukovi}</span>
+                    </li>
+
                 </ul>
                 <button className="sidebarButton">Show More</button>
                 <hr className="sidebarHr" />

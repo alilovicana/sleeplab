@@ -7,6 +7,7 @@ import patientBar from 'patient_bar.png';
 // import patientPie from 'patient_pie.png';
 import { PersonContext } from "../../context/PersonContext";
 import { useContext } from 'react';
+import picture from '../../assets/patient_scatter.png'
 
 
 export default function Central() {
@@ -75,7 +76,7 @@ export default function Central() {
                                 <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z" />
                             </svg>
                         )}
-                       DOT
+                        DOT
                     </div>
                     <div className={`checkbox ${showBar ? "on" : "off"}`} onClick={handleBarChange}>
                         {showBar ? (
@@ -88,7 +89,7 @@ export default function Central() {
                                 <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z" />
                             </svg>
                         )}
-                       BAR
+                        BAR
                     </div>
                     <div className={`checkbox ${showPie ? "on" : "off"}`} onClick={handlePieChange}>
                         {showPie ? (
@@ -101,15 +102,18 @@ export default function Central() {
                                 <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z" />
                             </svg>
                         )}
-                       PIE
+                        PIE
                     </div>
                 </div>
                 <div className="images" style={{ color: "gray" }}>
-                    {showHistogram && <img src={patientHistogram} alt="histogram" />}
-                    {showGraph && <img src={patientGraph} alt="graph" />}
+
+                    {showHistogram && <img src={`data:image/jpeg;base64,${person.graf}`} alt="histogram" />}
+                    {showGraph && person.graf !== null && (
+                        <img src={`data:image/jpeg;base64,${person.graf}`} alt="histogram" />
+                    )}
                     {/* {showDot && <img src={patientDot} alt="dot" />}
                     {showPie && <img src={patientPie} alt="Pie" />} */}
-                    {showBar && <img src={patientBar} alt="Bar" />}
+                    {/* {showBar && <img src={patientBar} alt="Bar" />} */}
                 </div>
             </div>
         </div>

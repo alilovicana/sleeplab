@@ -1,11 +1,17 @@
-import Home from "./pages/Home/Home";
+import '../src/pages/Home/home.css'
 import { PersonContext } from './context/PersonContext'
 import React, { useState, useEffect } from 'react'
 import axios from "axios";
 import { useContext } from "react";
 import { SearchContext } from "./context/SearchContext";
+import Sidebar from "../src/components/Sidebar/Sidebar"
+import Topbar from "../src/components/Topbar/Topbar"
+import Central from "../src/components/Central/Central"
+import Rightbar from "../src/components/Rightbar/Rightbar"
+
 
 export default function App() {
+  /***********************************EXCEL*********************************************/
   const { searchValue } = useContext(SearchContext);
   const INITIAL_STATE = {
     id: 'Unesite ispravan ID',
@@ -58,7 +64,7 @@ export default function App() {
         Lowest_SaO2: response.data.props.Lowest_SaO2,
         odi: response.data.props.ODI,
         histogram: '-',
-        graf: '-',
+        graf: null,
         popis_lijekova: '-',
         CV_Other: response.data.props.CV_Other,
         Other_o: response.data.props.Other_o,
@@ -75,45 +81,12 @@ export default function App() {
     }
   };
   /***********************************PYTHON*********************************************/
-  // const fetchGraph = async (patientId) => {
-  //   try {
-  //     const response = await axios.get(`/python/${patientId}`);
-  //   } catch (error) {
-  //     console.error("Error fetching graph:", error);
-  //     throw new Error("Greška prilikom dohvata pacijenta.");
-  //   }
-  // };
   const fetchGraph = async (patientId) => {
     try {
       const response = await axios.get(`/python/${patientId}`);
-      console.log("ana", response);
-      return response.data;
-
-
-      // Dekodiranje Base64 teksta u binarni sadržaj
-      const decodeBase64Image = (response) => {
-        const binaryString = atob(response);
-        const bytes = new Uint8Array(binaryString.length);
-        for (let i = '-'; i < binaryString.length; i++) {
-          bytes[i] = binaryString.charCodeAt(i);
-        }
-        return bytes;
-      };
-      const ImageComponent = ({ response }) => {
-        try {
-          const imageData = decodeBase64Image(response);
-          const blob = new Blob([imageData], { type: 'image/png' });
-          const imageUrl = URL.createObjectURL(blob);
-          return <img src={imageUrl} alt="Slika" />;
-        } catch (error) {
-          console.error("Error decoding image:", error);
-          return <p>Error decoding image.</p>;
-        }
-      };
-
       setPerson((prevPerson) => ({
         ...prevPerson,
-        graf: <ImageComponent response={response.data} />,
+        graf: response.data.base64Graph,
       }));
     } catch (error) {
       console.error(error);
@@ -121,17 +94,26 @@ export default function App() {
       throw new Error("Greška prilikom dohvata pacijenta.");
     }
   };
+
   const patientId = searchValue;
   // pozivanje fetchPerson funkcije samo kad se pronijeni patientID (uklanjanje Uncaught runtime errors:)
   useEffect(() => {
     fetchPerson(patientId);
-    // fetchGraph(patientId);
+    fetchGraph(patientId);
   }, [patientId]);
+
   return (
-    < PersonContext.Provider value={{ person, setPerson }}>
-      {/* {person.graf && person.graf} */}
-      <Home />
-    </ PersonContext.Provider>
+    <>
+      < PersonContext.Provider value={{ person, setPerson }}>
+        <Topbar />
+        <div className="redLine"></div>
+        <div className="homeContainer">
+          <Sidebar />
+          <Central />
+          <Rightbar />
+        </div>
+      </ PersonContext.Provider>
+    </>
   );
 }
 

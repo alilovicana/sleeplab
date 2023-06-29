@@ -1,9 +1,9 @@
-import { google } from 'googleapis';
 import express from "express";
 const app = express();
 import { GoogleSpreadsheet } from 'google-spreadsheet';
 import fs from 'fs';
 import { JWT } from 'google-auth-library'
+import { PythonShell } from 'python-shell';
 
 /***********************************EXCEL*********************************************/
 async function getServerSideProps(id) {
@@ -20,7 +20,7 @@ async function getServerSideProps(id) {
         //Definiranje google sheeta uz pomoć sheet ID-a
         let sheets = new GoogleSpreadsheet("13OqS9ad5-Eg0nWw0twfS2kpb6Ho8kocIrqwEE5sOch8", auth)
         //učitavanje sheeta
-        await sheets.loadInfo(); 
+        await sheets.loadInfo();
 
         //odabir bas tog prvog sheeta
         let sheet = sheets.sheetsByIndex[0];
@@ -52,7 +52,7 @@ async function getServerSideProps(id) {
             Other_o,
         ] = rowData;
 
-        console.log(Gender);
+        // console.log(Gender);
 
 
         // Result
@@ -99,72 +99,33 @@ app.get("/:id", async (req, res) => {
 });
 /***********************************PYTHON*********************************************/
 
-import { PythonShell } from 'python-shell';
+// Putanja do Python skripte koju želim pokrenuti
+const scriptPath = 'python.py';
 
-// // Putanja do Python skripte koju želite pokrenuti
-// ******************************************************
-// const scriptPath = 'python.py';
-// ******************************************************
-// //get graf
-// app.get("/python/:id", async (req, res) => {
-//     const { id } = req.params;
-//     // Opcije za izvršavanje skripte
-//     const options = {
-//         pythonPath: 'C:/Users/Korisnik/AppData/Local/Programs/Python/Python311/python.exe',
-//          args: [id],
-//     };
-//     try {
-
-//         // Call your function with the patient ID and retrieve the result
-//       const response= await PythonShell.run(scriptPath, options, async (err, result) => {
-//             if (err) {
-//                 console.error(err);
-//             } else {
-//                 console.log('Rezultat:', result);
-//             }
-//         });
-//         res.status(200).json(response);
-//     } catch (err) {
-//         console.log(5)
-//         // If an error occurs, send the error as the response
-//         res.status(500).json({ error: err.message });
-//     }
-// });
-// ******************************************************
-// app.get("/python/:id", async (req, res) => {
-//     const { id } = req.params;
-//     // Opcije za izvršavanje skripte
-//     const options = {
-//         pythonPath: 'C:/Users/Korisnik/AppData/Local/Programs/Python/Python311/python.exe',
-//         args: [id],
-//     };
-//     try {
-//         console.log(1)
-//         let result; // Dodajte varijablu result izvan povratnog poziva
-
-//         // Call your function with the patient ID and retrieve the result
-//         await PythonShell.run(scriptPath, options, async (err, pyResult) => {
-//             if (err) {
-//                 console.log(2)
-//                 console.error(err);
-//             } else {
-//                 console.log('Rezultat:', pyResult);
-//                 console.log(3)
-//             }
-//         });
-//         const patientGraph = fs.readFileSync('./patient_graph.png');
-//         const base64Graph = patientGraph.toString('base64');
-//         result = base64Graph;
-//         console.log(4)
-//         // If the result is successfully retrieved, send it as the response
-//         console.log(result);
-//         res.status(200).json({ result }).send();
-//     } catch (err) {
-//         console.log(5)
-//         // If an error occurs, send the error as the response
-//         res.status(500).json({ error: err.message });
-//     }
-// });
+app.get("/python/:id", async (req, res) => {
+    const { id } = req.params;
+    // Opcije za izvršavanje skripte
+    const options = {
+        pythonPath: 'C:/Users/Korisnik/AppData/Local/Programs/Python/Python311/python.exe',
+        args: [id],
+    };
+    try {
+        // Call your function with the patient ID and retrieve the result
+        await PythonShell.run(scriptPath, options, async (err, pyResult) => {
+            if (err) {
+                console.error(err);
+            } else {
+                console.log('Rezultat:', pyResult);
+            }
+        });
+        const patientGraph = fs.readFileSync('./patient_graph.png');
+        const base64Graph = patientGraph.toString('base64');
+        res.status(200).json({ base64Graph });
+    } catch (err) {
+        // If an error occurs, send the error as the response
+        res.status(500).json({ error: err.message });
+    }
+});
 
 app.listen(8800, () => {
     console.log("Backend server is running!");
