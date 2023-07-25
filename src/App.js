@@ -8,7 +8,8 @@ import Sidebar from "../src/components/Sidebar/Sidebar"
 import Topbar from "../src/components/Topbar/Topbar"
 import Central from "../src/components/Central/Central"
 import Rightbar from "../src/components/Rightbar/Rightbar"
-
+import { GraphContext } from './context/GraphContext';
+import LoadingSpinner from "./LoadingSpinner/LoadingSpinner";
 
 export default function App() {
   /***********************************EXCEL*********************************************/
@@ -31,11 +32,19 @@ export default function App() {
     odi: '-',
     Mean_SaO2: '-',
     Lowest_SaO2: '-',
-    histogram: null,
-    graf: null,
     popis_lijekova: '-',
     CV_Other: '-',
     Other_o: '-',
+    isFetching: false,
+    error: false,
+  };
+  const INITIAL_GRAPH_STATE = {
+    diff_histogram: null,
+    Duration_time_histogram: null,
+    Min_MAx_find_peaks_sa_pravcem: null,
+    Min_MAx_find_peaks: null,
+    slope_histogram: null,
+    Vrijeme_trajanja: null,
     isFetching: false,
     error: false,
   };
@@ -44,7 +53,7 @@ export default function App() {
   const fetchPerson = async (patientId) => {
     try {
       const response = await axios.get(`/${patientId}`);
-      console.log('ana ' + response.data);
+      console.log('ana ' + response);
       const PERSON_STATE = {
         id: response.data.props.Patient_ID,
         spol: response.data.props.Gender,
@@ -63,8 +72,6 @@ export default function App() {
         Mean_SaO2: response.data.props.Mean_SaO2,
         Lowest_SaO2: response.data.props.Lowest_SaO2,
         odi: response.data.props.ODI,
-        histogram: '-',
-        graf: null,
         popis_lijekova: '-',
         CV_Other: response.data.props.CV_Other,
         Other_o: response.data.props.Other_o,
@@ -73,7 +80,6 @@ export default function App() {
 
       };
       setPerson(PERSON_STATE);
-      console.log(response);
       return response.data; // Vraća podatke pacijenta
     } catch (error) {
       console.error(error);
@@ -81,16 +87,32 @@ export default function App() {
     }
   };
   /***********************************PYTHON*********************************************/
+  const [graph, setGraph] = useState(INITIAL_GRAPH_STATE);
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const fetchGraph = async (patientId) => {
     try {
+      setIsLoading(true);
       const response = await axios.get(`/python/${patientId}`);
-      setPerson((prevPerson) => ({
-        ...prevPerson,
-        graf: response.data.base64Graph,
-      }));
+      const GRAPH_STATE = {
+        diff_histogram: response.data.images[0].base64Image,
+        Duration_time_histogram: response.data.images[1].base64Image,
+        Min_MAx_find_peaks_sa_pravcem: response.data.images[2].base64Image,
+        Min_MAx_find_peaks: response.data.images[3].base64Image,
+        slope_histogram: response.data.images[4].base64Image,
+        Vrijeme_trajanja: response.data.images[5].base64Image,
+        isFetching: false,
+        error: false,
+
+      };
+      setGraph(GRAPH_STATE);
+      setIsLoading(false);
+      return response.data; // Vraća podatke pacijenta
     } catch (error) {
       console.error(error);
-      console.error("Error fetching graph:", error);
+      console.error("Error fetching patient:", error);
+      setErrorMessage("Unable to get patient plots");
+      setIsLoading(false);
       throw new Error("Greška prilikom dohvata pacijenta.");
     }
   };
@@ -103,18 +125,19 @@ export default function App() {
   }, [patientId]);
 
   return (
-    <>
-      < PersonContext.Provider value={{ person, setPerson }}>
-        <Topbar />
-        <div className="redLine"></div>
-        <div className="homeContainer">
-          <Sidebar />
-          <Central />
-          <Rightbar />
-        </div>
-      </ PersonContext.Provider>
-    </>
+    < PersonContext.Provider value={{ person, setPerson }}>
+      <Topbar />
+      <div className="redLine"></div>
+      <div className="homeContainer">
+        <Sidebar />
+        < GraphContext.Provider value={{ graph, setGraph }}>
+          {/* {isLoading ? <LoadingSpinner /> : <Central />}  */}
+          <Central/>
+           {errorMessage && <div className="error">{errorMessage}</div>}
+        </GraphContext.Provider>
+        <Rightbar />
+      </div>
+    </ PersonContext.Provider>
   );
 }
-
 
