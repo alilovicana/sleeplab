@@ -1,10 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import "./central.css";
-import patientHistogram from 'patient_histogram.png';
-import patientGraph from 'patient_graph.png';
-// import patientDot from 'patient_dot.png';
-import patientBar from 'patient_bar.png';
-// import patientPie from 'patient_pie.png';
 import { PersonContext } from "../../context/PersonContext";
 import { useContext } from 'react';
 import picture from '../../assets/patient_scatter.png'

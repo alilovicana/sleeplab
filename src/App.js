@@ -8,6 +8,7 @@ import Sidebar from "../src/components/Sidebar/Sidebar"
 import Topbar from "../src/components/Topbar/Topbar"
 import Central from "../src/components/Central/Central"
 import Rightbar from "../src/components/Rightbar/Rightbar"
+import { resourcesettings } from 'googleapis/build/src/apis/resourcesettings';
 
 
 export default function App() {
@@ -84,9 +85,11 @@ export default function App() {
   const fetchGraph = async (patientId) => {
     try {
       const response = await axios.get(`/python/${patientId}`);
+      console.log(response)
+      const { images } = response.data;
       setPerson((prevPerson) => ({
         ...prevPerson,
-        graf: response.data.base64Graph,
+        graf: images,
       }));
     } catch (error) {
       console.error(error);

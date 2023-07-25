@@ -118,9 +118,28 @@ app.get("/python/:id", async (req, res) => {
                 console.log('Rezultat:', pyResult);
             }
         });
-        const patientGraph = fs.readFileSync('./patient_graph.png');
-        const base64Graph = patientGraph.toString('base64');
-        res.status(200).json({ base64Graph });
+        // const patientGraph = fs.readFileSync('./patient_graph.png');
+        // const base64Graph = patientGraph.toString('base64');
+        // res.status(200).json({ base64Graph });
+
+        const imagePaths = [
+            './diff_histogram.png',
+            './Duration_time_histogram.png',
+            './Min_MAx_find_peaks_sa_pravcem.png',
+            './Min_MAx_find_peaks.png',
+            './slope_histogram.png',
+            './Vrijeme_trajanja.png'
+        ];
+        const images = [];
+
+        for (const imagePath of imagePaths) {
+            const image = fs.readFileSync(imagePath);
+            const base64Image = image.toString('base64');
+            images.push({ base64Image });
+        }
+        console.log(images)
+        res.status(200).json({ images });
+
     } catch (err) {
         // If an error occurs, send the error as the response
         res.status(500).json({ error: err.message });
