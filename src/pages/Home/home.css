@@ -1,0 +1,13 @@
+.homeContainer{
+    display: flex;
+    width: 100%;
+}
+.redLine {
+    height: 2px;
+    background-color: red;
+    position: fixed;
+    top: 50px; /* Ovdje zamijenite sa stvarnom visinom Topbara */
+    left: 0;
+    right: 0;
+  }
+  
